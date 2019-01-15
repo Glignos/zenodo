@@ -864,13 +864,12 @@ RECORDS_REST_SORT_OPTIONS = dict(
         ),
         journal=dict(
             fields=[
-                'journal.year',
+                'journal.title',
                 'journal.volume',
                 'journal.issue',
                 'journal.pages',
             ],
             title='Journal',
-            default_order='desc',
             order=6,
         ),
         version=dict(
