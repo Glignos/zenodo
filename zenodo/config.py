@@ -989,7 +989,7 @@ PREVIEWER_PREFERENCE = [
 IIIF_RESIZE_RESAMPLE = 'PIL.Image:BICUBIC'
 
 #: IIIF Cache handler
-IIIF_CACHE_HANDLER = 'zenodo.modules.thumbnails.cache:ImageRedisCache'
+IIIF_CACHE_HANDLER = 'zenodo.modules.iiif.cache:FilteredImageRedisCache'
 
 # Redis URL Cache
 IIIF_CACHE_REDIS_URL = CACHE_REDIS_URL
