@@ -121,7 +121,7 @@ invenio-files-rest==1.0.0a23
 invenio-formatter==1.0.0
 invenio-github==1.0.0a15
 invenio-i18n==1.0.0
-invenio-iiif==1.0.0a4
+invenio-iiif==1.0.0a5
 invenio-indexer==1.0.1
 invenio-jsonschemas==1.0.0
 invenio-logging==1.0.0
