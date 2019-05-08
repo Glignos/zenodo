@@ -5,32 +5,27 @@
       "numeric_detection": false,
       "properties": {
         "$schema": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "grants": {
-          "type": "object",
           "properties": {
             "$schema": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "internal_id": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "code": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "title": {
-              "type": "string"
+              "type": "text"
             },
             "version": {
-              "type": "string"
+              "type": "text"
             },
             "acronym": {
-              "type": "string"
+              "type": "text"
             },
             "startdate": {
               "type": "date",
@@ -41,38 +36,31 @@
               "ignore_malformed": true
             },
             "funder": {
-              "type": "object",
               "properties": {
                 "doi": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "identifiers": {
-                  "type": "object",
                   "properties": {
                     "oaf": {
-                      "type": "string",
-                      "index": "not_analyzed"
+                      "type": "keyword"
                     }
                   }
                 },
                 "name": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "acronyms": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "country": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "type": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "subtype": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "remote_created": {
                   "type": "date"
@@ -83,44 +71,37 @@
               }
             },
             "program": {
-              "type": "string"
+              "type": "text"
             },
             "remote_modified": {
               "type": "date",
               "ignore_malformed": true
             },
             "url": {
-              "type": "string"
+              "type": "text"
             },
             "identifiers": {
-              "type": "object",
               "properties": {
                 "oai_id": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "purl": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "eurepo": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 }
               }
             },
             "suggest": {
               "type": "completion",
-              "analyzer" : "simple",
-              "search_analyzer" : "simple",
-              "payloads" : true,
-              "context": {
-                "funder": {
+              "analyzer": "simple",
+              "search_analyzer": "simple",
+              "contexts": [{
+                  "name": "funder",
                   "type": "category",
-                  "path": "funder.doi",
-                  "default": ""
-                }
-              }
+                  "path": "funder.doi"
+              }]
             }
           }
         },
@@ -128,75 +109,60 @@
           "type": "long"
         },
         "conceptrecid": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "conceptdoi": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "doi": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "isbn": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "resource_type": {
-          "type" : "object",
           "properties": {
             "type": {
-              "type": "string",
-              "index": "not_analyzed",
+              "type": "keyword",
               "copy_to": "type"
             },
             "subtype": {
-              "type": "string",
-              "index": "not_analyzed",
+              "type": "keyword",
               "copy_to": "type"
             }
           }
         },
         "relations": {
-          "type": "object",
           "properties": {
             "version": {
-              "type": "object",
               "properties": {
                 "parent": {
-                  "type": "object",
                   "properties": {
                     "pid_type": {
-                      "type": "string"
+                      "type": "text"
                     },
                     "pid_value": {
-                      "type": "string",
-                      "index": "not_analyzed"
+                      "type": "keyword"
                     }
                   }
                 },
                 "last_child": {
-                  "type": "object",
                   "properties": {
                     "pid_type": {
-                      "type": "string"
+                      "type": "text"
                     },
                     "pid_value": {
-                      "type": "string",
-                      "index": "not_analyzed"
+                      "type": "keyword"
                     }
                   }
                 },
                 "draft_child_deposit": {
-                  "type": "object",
                   "properties": {
                     "pid_type": {
-                      "type": "string"
+                      "type": "text"
                     },
                     "pid_value": {
-                      "type": "string",
-                      "index": "not_analyzed"
+                      "type": "keyword"
                     }
                   }
                 },
@@ -214,10 +180,9 @@
           }
         },
         "_deposit": {
-          "type": "object",
           "properties": {
             "id": {
-              "type": "string"
+              "type": "text"
             },
             "created_by": {
               "type": "integer"
@@ -228,8 +193,7 @@
           }
         },
         "type": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "publication_date": {
           "type": "date",
@@ -239,70 +203,62 @@
           "type": "date"
         },
         "title": {
-          "type": "string"
+          "type": "text"
         },
         "creators": {
-          "type": "object",
           "properties": {
             "name": {
-              "type": "string"
+              "type": "text"
             },
             "affiliation": {
-              "type": "string"
+              "type": "text"
             },
             "familyname": {
-              "type": "string"
+              "type": "text"
             },
             "givennames": {
-              "type": "string"
+              "type": "text"
             },
             "gnd": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "orcid": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
         "description": {
-          "type": "string"
+          "type": "text"
         },
         "keywords": {
-          "type": "string"
+          "type": "text"
         },
         "subjects": {
-          "type" : "nested",
+          "type": "nested",
           "properties": {
             "term": {
-              "type": "string"
+              "type": "text"
             },
             "identifier": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "scheme": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
         "notes": {
-          "type": "string"
+          "type": "text"
         },
         "language": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "access_right": {
-          "type": "string",
-          "index": "not_analyzed",
+          "type": "keyword",
           "copy_to": "accessrights"
         },
         "accessrights": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "embargo_date": {
           "type": "date",
@@ -312,51 +268,41 @@
           "type": "date"
         },
         "access_conditions": {
-          "type": "string"
+          "type": "text"
         },
         "license": {
           "properties": {
             "identifier": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "license": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "source": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "url": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
-          },
-          "type": "object"
+          }
         },
         "communities": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "provisional_communities": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "related_identifiers": {
           "type": "nested",
           "properties": {
             "identifier": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "scheme": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "relation": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
@@ -364,123 +310,109 @@
           "type": "nested",
           "properties": {
             "identifier": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "scheme": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
         "contributors": {
-          "type": "object",
           "properties": {
             "name": {
-              "type": "string"
+              "type": "text"
             },
             "type": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "affiliation": {
-              "type": "string"
+              "type": "text"
             },
             "familyname": {
-              "type": "string"
+              "type": "text"
             },
             "givennames": {
-              "type": "string"
+              "type": "text"
             },
             "gnd": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "orcid": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
         },
         "references": {
           "properties": {
             "raw_reference": {
-              "type": "string"
+              "type": "text"
             }
-          },
-          "type": "object"
+          }
         },
         "journal": {
-          "type": "object",
           "properties": {
             "issue": {
-              "type": "string"
+              "type": "text"
             },
             "title": {
-              "type": "string"
+              "type": "text"
             },
             "pages": {
-              "type": "string"
+              "type": "text"
             },
             "volume": {
-              "type": "string"
+              "type": "text"
             },
             "year": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "meeting": {
           "properties": {
             "dates": {
-              "type": "string"
+              "type": "text"
             },
             "title": {
-              "type": "string"
+              "type": "text"
             },
             "place": {
-              "type": "string"
+              "type": "text"
             },
             "session": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "session_part": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "acronym": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "url": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
-          },
-          "type": "object"
+          }
         },
         "part_of": {
-          "type": "object",
           "properties": {
             "title": {
-              "type": "string"
+              "type": "text"
             },
             "pages": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "imprint": {
           "properties": {
             "publisher": {
-              "type": "string"
+              "type": "text"
             },
             "place": {
-              "type": "string"
+              "type": "text"
             },
             "isbn": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
@@ -488,76 +420,65 @@
           "type": "nested",
           "properties": {
             "university": {
-              "type": "string"
+              "type": "text"
             },
             "supervisors": {
               "type": "nested",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "affiliation": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "familyname": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "givennames": {
-                  "type": "string"
+                  "type": "text"
                 },
                 "gnd": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 },
                 "orcid": {
-                  "type": "string",
-                  "index": "not_analyzed"
+                  "type": "keyword"
                 }
               }
             }
           }
         },
         "_files": {
-          "type": "object",
           "properties": {
             "bucket": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "key": {
-              "type": "string",
-              "index": "not_analyzed",
+              "type": "keyword",
               "copy_to": "filename"
             },
             "version_id": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "size": {
               "type": "long"
             },
             "checksum": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "previewer": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "type": {
-              "type": "string",
-              "index": "not_analyzed",
+              "type": "keyword",
               "copy_to": "filetype"
             }
           }
         },
         "filetype": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "filename": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "filecount": {
           "type": "integer"
@@ -566,8 +487,7 @@
           "type": "long"
         },
         "owners": {
-          "type": "integer",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
         "_created": {
           "type": "date",
@@ -584,7 +504,6 @@
           "type": "date"
         },
         "dates": {
-          "type": "object",
           "properties": {
             "start": {
               "type": "date"
@@ -593,25 +512,23 @@
               "type": "date"
             },
             "type": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "description": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "method": {
-          "type": "string"
+          "type": "text"
         },
         "locations": {
-          "type": "object",
           "properties": {
             "place": {
-              "type": "string"
+              "type": "text"
             },
             "description": {
-              "type": "string"
+              "type": "text"
             },
             "point": {
               "type": "geo_point"
@@ -619,22 +536,30 @@
           }
         },
         "custom": {
-          "type": "object",
           "dynamic": false,
-          "enabled": false
+          "enabled": false,
+          "properties": {}
         },
         "custom_keywords": {
-          "type" : "nested",
+          "type": "nested",
           "properties": {
-            "key": {"type": "string", "index": "not_analyzed"},
-            "value": {"type": "string", "index": "not_analyzed"}
+            "key": {
+              "type": "keyword"
+            },
+            "value": {
+              "type": "keyword"
+            }
           }
         },
         "custom_text": {
-          "type" : "nested",
+          "type": "nested",
           "properties": {
-            "key": {"type": "string", "index": "not_analyzed"},
-            "value": {"type": "string"}
+            "key": {
+              "type": "keyword"
+            },
+            "value": {
+              "type": "text"
+            }
           }
         }
       }
