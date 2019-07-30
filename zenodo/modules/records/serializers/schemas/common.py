@@ -106,7 +106,7 @@ class StrictKeysMixin(object):
     """Ensure only defined keys exists in data."""
 
     @validates_schema(pass_original=True)
-    def check_unknown_fields(self, data, original_data):
+    def check_unknown_fields(self, data, original_data, **kwargs):
         """Check for unknown keys."""
         if not isinstance(original_data, list):
             items = [original_data]
@@ -152,19 +152,20 @@ class PersonSchemaV1(Schema, StrictKeysMixin):
     orcid = PersistentId(scheme='ORCID')
 
     @post_dump(pass_many=False)
-    def clean(self, data):
+    def clean(self, data, **kwargs):
         """Clean empty values."""
         return clean_empty(data, ['orcid', 'gnd', 'affiliation'])
 
     @post_load(pass_many=False)
-    def remove_gnd_prefix(self, data):
+    def remove_gnd_prefix(self, data, **kwargs):
         """Remove GND prefix (which idutils normalization adds)."""
         gnd = data.get('gnd')
         if gnd and gnd.startswith('gnd:'):
             data['gnd'] = gnd[len('gnd:'):]
+        return data
 
     @validates_schema
-    def validate_data(self, data):
+    def validate_data(self, data, **kwargs):
         """Validate schema."""
         name = data.get('name')
         if not name:
@@ -217,9 +218,10 @@ class IdentifierSchemaV1(Schema, StrictKeysMixin):
         """Normalize identifier."""
         data['identifier'] = idutils.normalize_pid(
             data['identifier'], data['scheme'])
+        return data
 
     @validates_schema
-    def validate_data(self, data):
+    def validate_data(self, data, **kwargs):
         """Validate identifier and scheme."""
         id_ = data.get('identifier')
         scheme = data.get('scheme')
@@ -281,7 +283,7 @@ class LocationSchemaV1(Schema):
     description = SanitizedUnicode()
 
     @validates('lat')
-    def validate_latitude(self, value):
+    def validate_latitude(self, value, **kwargs):
         """Validate that location exists."""
         if not (-90 <= value <= 90):
             raise ValidationError(
@@ -289,7 +291,7 @@ class LocationSchemaV1(Schema):
             )
 
     @validates('lon')
-    def validate_longitude(self, value):
+    def validate_longitude(self, value, **kwargs):
         """Validate that location exists."""
         if not (-180 <= value <= 180):
             raise ValidationError(
@@ -335,7 +337,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
     method = SanitizedUnicode()
 
     @validates('locations')
-    def validate_locations(self, value):
+    def validate_locations(self, value, **kwargs):
         """Validate that there should be both latitude and longitude."""
         for location in value:
             if (location.get('lon') and not location.get('lat')) or \
@@ -345,7 +347,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                     field_names=['locations'])
 
     @validates('language')
-    def validate_language(self, value):
+    def validate_language(self, value, **kwargs):
         """Validate that language is ISO 639-3 value."""
         if not pycountry.languages.get(alpha_3=value):
             raise ValidationError(
@@ -354,7 +356,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             )
 
     @validates('dates')
-    def validate_dates(self, value):
+    def validate_dates(self, value, **kwargs):
         """Validate that start date is before the corresponding end date."""
         for interval in value:
             start = arrow.get(interval.get('start'), 'YYYY-MM-DD').date() \
@@ -374,7 +376,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 )
 
     @validates('embargo_date')
-    def validate_embargo_date(self, value):
+    def validate_embargo_date(self, value, **kwargs):
         """Validate that embargo date is in the future."""
         if arrow.get(value).date() <= arrow.utcnow().date():
             raise ValidationError(
@@ -383,7 +385,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             )
 
     @validates('license')
-    def validate_license_ref(self, value):
+    def validate_license_ref(self, value, **kwargs):
         """Validate if license resolves."""
         if not self.validate_jsonref(value):
             raise ValidationError(
@@ -392,7 +394,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             )
 
     @validates('grants')
-    def validate_grants_ref(self, values):
+    def validate_grants_ref(self, values, **kwargs):
         """Validate if license resolves."""
         for v in values:
             if not self.validate_jsonref(v):
@@ -402,7 +404,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 )
 
     @validates('doi')
-    def validate_doi(self, value):
+    def validate_doi(self, value, **kwargs):
         """Validate if doi exists."""
         if value and has_request_context():
             required_doi = self.context.get('required_doi')
@@ -435,7 +437,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
                 raise err
 
     @validates_schema()
-    def validate_license(self, data):
+    def validate_license(self, data, **kwargs):
         """Validate license."""
         acc = data.get('access_right')
         if acc in [AccessRight.OPEN, AccessRight.EMBARGOED] and \
@@ -506,7 +508,7 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
         return data.get('custom', missing)
 
     @pre_load()
-    def preload_accessrights(self, data):
+    def preload_accessrights(self, data, **kwargs):
         """Remove invalid access rights combinations."""
         # Default value
         if 'access_right' not in data:
@@ -520,29 +522,33 @@ class CommonMetadataSchemaV1(Schema, StrictKeysMixin, RefResolverMixin):
             data.pop('access_conditions', None)
         if data.get('access_right') != AccessRight.EMBARGOED:
             data.pop('embargo_date', None)
+        return data
 
     @pre_load()
-    def preload_publicationdate(self, data):
+    def preload_publicationdate(self, data, **kwargs):
         """Default publication date."""
         if 'publication_date' not in data:
             data['publication_date'] = arrow.utcnow().date().isoformat()
+        return data
 
     @post_load()
-    def postload_keywords_filter(self, data):
+    def postload_keywords_filter(self, data, **kwargs):
         """Filter empty keywords."""
         if 'keywords' in data:
             data['keywords'] = [
                 kw for kw in data['keywords'] if kw.strip()
             ]
+        return data
 
     @post_load()
-    def postload_references(self, data):
+    def postload_references(self, data, **kwargs):
         """Filter empty references and wrap them."""
         if 'references' in data:
             data['references'] = [
                 {'raw_reference': ref}
                 for ref in data['references'] if ref.strip()
             ]
+        return data
 
 
 class CommonRecordSchemaV1(Schema, StrictKeysMixin):
@@ -559,7 +565,7 @@ class CommonRecordSchemaV1(Schema, StrictKeysMixin):
     created = fields.Str(dump_only=True)
 
     @pre_dump()
-    def predump_relations(self, obj):
+    def predump_relations(self, obj, **kwargs):
         """Add relations to the schema context."""
         m = obj.get('metadata', {})
         if 'relations' not in m:
@@ -574,8 +580,9 @@ class CommonRecordSchemaV1(Schema, StrictKeysMixin):
             version_info = m['relations'].get('version', [])
             if version_info:
                 version_info[0].pop('draft_child_deposit', None)
+        return obj
 
-    def dump_links(self, obj):
+    def dump_links(self, obj, **kwargs):
         """Dump links."""
         links = obj.get('links', {})
         if current_app:
@@ -690,7 +697,7 @@ class CommonRecordSchemaV1(Schema, StrictKeysMixin):
         return links
 
     @post_load(pass_many=False)
-    def remove_envelope(self, data):
+    def remove_envelope(self, data, **kwargs):
         """Post process data."""
         # Remove envelope
         if 'metadata' in data:

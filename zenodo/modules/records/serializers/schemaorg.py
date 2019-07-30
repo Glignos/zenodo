@@ -50,4 +50,4 @@ class ZenodoSchemaOrgSerializer(ZenodoJSONSerializer):
         # Resolve string "https://schema.org/ScholarlyArticle"
         # to schemas.ScholarlyArticle class (etc.)
         schema_cls = self._get_schema_class(obj)
-        return schema_cls(context=context).dump(obj).data
+        return schema_cls(context=context).dump(obj)

@@ -83,13 +83,12 @@ def test_schema_class_resolver():
 def test_person():
     """Test the schema.org Person schema."""
     simple_person = {'name': 'Doe, John'}
-    data, err = schemaorg.Person().dump(simple_person)
-    assert not err
+    data = schemaorg.Person().dump(simple_person)
     assert data == {'name': 'Doe, John', '@type': 'Person'}
     simple_person['affiliation'] = 'CERN'
 
-    data, err = schemaorg.Person().dump(simple_person)
-    assert not err
+    data = schemaorg.Person().dump(simple_person)
+
     assert data == {'name': 'Doe, John',
                     'affiliation': 'CERN',
                     '@type': 'Person'}
@@ -97,8 +96,8 @@ def test_person():
     # Add GND - it should become the identifier of the person
     simple_person['gnd'] = '170118215'
 
-    data, err = schemaorg.Person().dump(simple_person)
-    assert not err
+    data = schemaorg.Person().dump(simple_person)
+
     assert data == {'name': 'Doe, John',
                     'affiliation': 'CERN',
                     '@type': 'Person',
@@ -106,8 +105,8 @@ def test_person():
 
     # Add ORCID - it should supersede GND as the identifier
     simple_person['orcid'] = '0000-0002-1825-0097'
-    data, err = schemaorg.Person().dump(simple_person)
-    assert not err
+    data = schemaorg.Person().dump(simple_person)
+
     assert data == {'name': 'Doe, John',
                     'affiliation': 'CERN',
                     '@type': 'Person',
@@ -115,8 +114,8 @@ def test_person():
 
     # Remove GND
     del simple_person['gnd']
-    data, err = schemaorg.Person().dump(simple_person)
-    assert not err
+    data = schemaorg.Person().dump(simple_person)
+
     assert data == {'name': 'Doe, John',
                     'affiliation': 'CERN',
                     '@type': 'Person',
@@ -126,8 +125,8 @@ def test_person():
 def test_language():
     """Test the schema.org Language schema."""
     lang = 'pol'
-    data, err = schemaorg.Language().dump(lang)
-    assert not err
+    data = schemaorg.Language().dump(lang)
+
     assert data == {'alternateName': 'pol',
                     '@type': 'Language',
                     'name': 'Polish'}
@@ -142,9 +141,9 @@ def test_minimal_software_record(minimal_record_model):
           "scheme": "url"
         }
     ]
-    data, err = schemaorg.SoftwareSourceCode().dump(
+    data= schemaorg.SoftwareSourceCode().dump(
         dict(metadata=minimal_record_model))
-    assert not err
+    import ipdb; ipdb.set_trace()
     expected = {
         u'@context': u'https://schema.org/',
         u'@id': 'https://doi.org/10.5072/zenodo.123',
@@ -171,8 +170,8 @@ def test_full_record(record_with_files_creation):
     schema_cls = ZenodoSchemaOrgSerializer._get_schema_class(
         dict(metadata=record))
     assert schema_cls == schemaorg.Book
-    data, err = schemaorg.ScholarlyArticle().dump(dict(metadata=record))
-    assert not err
+    data= schemaorg.ScholarlyArticle().dump(dict(metadata=record))
+
     expected = {
         u'@context': u'https://schema.org/',
         u'@id': 'https://doi.org/10.1234/foo.bar',
@@ -323,9 +322,9 @@ def test_dataset(app, users, minimal_record_model, recid_pid):
             },
         ]
 
-        data, err = schemaorg.Dataset().dump(
+        data = schemaorg.Dataset().dump(
             dict(metadata=minimal_record_model))
-        assert not err
+
         assert data['distribution'] == [
             {
                 u'@type': u'DataDownload',
@@ -344,7 +343,6 @@ def test_dataset(app, users, minimal_record_model, recid_pid):
         for right in ['closed', 'embargoed', 'restricted']:
 
             minimal_record_model['access_right'] = right
-            data, err = schemaorg.Dataset().dump(
+            data= schemaorg.Dataset().dump(
                 dict(metadata=minimal_record_model))
-            assert not err
             assert 'distribution' not in data

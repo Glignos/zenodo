@@ -32,7 +32,8 @@ from marshmallow import fields
 class TrimmedString(fields.String):
     """String field which strips whitespace the ends of the string."""
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize DOI value."""
-        value = super(TrimmedString, self)._deserialize(value, attr, data)
+        value = super(TrimmedString, self)._deserialize(
+            value, attr, data)
         return value.strip()

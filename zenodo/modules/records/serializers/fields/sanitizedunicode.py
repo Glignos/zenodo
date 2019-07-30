@@ -47,9 +47,10 @@ class SanitizedUnicode(TrimmedString):
                 0xE000 <= codepoint <= 0xFFFD or
                 0x10000 <= codepoint <= 0x10FFFF)
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize sanitized string value."""
-        value = super(SanitizedUnicode, self)._deserialize(value, attr, data)
+        value = super(SanitizedUnicode, self)._deserialize(
+            value, attr, data)
         value = fix_text(value)
 
         # NOTE: This `join` might be ineffiecient... There's a solution with a

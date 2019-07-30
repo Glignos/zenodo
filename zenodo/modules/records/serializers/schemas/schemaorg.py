@@ -268,7 +268,7 @@ class Dataset(CreativeWork):
     measurementTechnique = SanitizedUnicode(attribute='metadata.method')
 
     @pre_dump
-    def hide_closed_files(self, obj):
+    def hide_closed_files(self, obj, **kwargs):
         """Hide the _files if the record is not Open Access."""
         m = obj['metadata']
         if m['access_right'] != 'open' and '_files' in m:

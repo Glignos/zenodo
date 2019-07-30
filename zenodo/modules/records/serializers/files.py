@@ -49,7 +49,7 @@ def files_responsify(schema_class, mimetype):
             obj = ZenodoFileObject(obj, {})
 
         return current_app.response_class(
-            json.dumps(schema.dump(obj.dumps()).data),
+            json.dumps(schema.dump(obj.dumps())),
             mimetype=mimetype,
             status=status
         )

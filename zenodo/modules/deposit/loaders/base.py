@@ -67,7 +67,7 @@ def marshmallow_loader(schema_class, **kwargs):
             elif not record.is_published():
                 context['allowed_dois'] = [doi_generator(record['recid'])]
             if record.is_published() or record.get('conceptdoi'):
-                # if the record is published or this is a new version 
+                # if the record is published or this is a new version
                 # of a published record then the DOI is required
                 context['doi_required'] = True
                 data.setdefault('metadata', {})
@@ -85,7 +85,6 @@ def marshmallow_loader(schema_class, **kwargs):
 
         # Load data
         result = schema_class(context=context).load(data)
-        if result.errors:
-            raise MarshmallowErrors(result.errors)
-        return result.data
+        ### INSERT HANDLERS
+        return result
     return translator

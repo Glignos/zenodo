@@ -71,9 +71,10 @@ class SanitizedHTML(SanitizedUnicode):
         self.tags = tags or ALLOWED_TAGS
         self.attrs = attrs or ALLOWED_ATTRS
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize string by sanitizing HTML."""
-        value = super(SanitizedHTML, self)._deserialize(value, attr, data)
+        value = super(SanitizedHTML, self)._deserialize(
+            value, attr, data)
         return bleach.clean(
             value,
             tags=self.tags,

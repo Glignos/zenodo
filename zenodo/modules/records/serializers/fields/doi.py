@@ -64,7 +64,7 @@ class DOI(SanitizedUnicode):
         self.managed_prefixes = managed_prefixes or []
         self.banned_prefixes = banned_prefixes or ['10.5072']
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize DOI value."""
         value = super(DOI, self)._deserialize(value, attr, data)
         value = value.strip()

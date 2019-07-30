@@ -55,9 +55,10 @@ class PersistentId(SanitizedUnicode):
             return missing
         return value
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize persistent identifier value."""
-        value = super(PersistentId, self)._deserialize(value, attr, data)
+        value = super(PersistentId, self)._deserialize(
+            value, attr, data)
         value = value.strip()
 
         schemes = idutils.detect_identifier_schemes(value)

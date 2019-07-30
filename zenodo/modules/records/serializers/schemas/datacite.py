@@ -150,7 +150,7 @@ class DataCiteSchema(Schema):
     descriptions = fields.Method('get_descriptions')
 
     @post_dump
-    def cleanup(self, data):
+    def cleanup(self, data, **kwargs):
         """Clean the data."""
         # Remove the language if Alpha-2 code was not found
         if 'language' in data and data['language'] is None:
@@ -265,7 +265,7 @@ class DataCiteSchema(Schema):
         items = []
         for r in obj['metadata'].get('related_identifiers', []):
             if r['scheme'] in accepted_types:
-                items.append(s.dump(r).data)
+                items.append(s.dump(r))
 
         doi = obj['metadata'].get('doi', '')
         if not is_doi_locally_managed(doi):
@@ -273,7 +273,7 @@ class DataCiteSchema(Schema):
                 'identifier': doi,
                 'scheme': 'doi',
                 'relation': 'IsIdenticalTo',
-            }).data)
+            }))
 
         # Zenodo community identifiers
         for comm in obj['metadata'].get('communities', []):
@@ -281,7 +281,7 @@ class DataCiteSchema(Schema):
                 'identifier': ui_link_for('community', id=comm),
                 'scheme': 'url',
                 'relation': 'IsPartOf',
-            }).data)
+            }))
 
         return items
 
@@ -308,15 +308,15 @@ class DataCiteSchema(Schema):
                 obj['metadata'].get('embargo_date'):
             dates.append(schema.dump(dict(
                 date=obj['metadata']['embargo_date'],
-                type='Available')).data)
+                type='Available')))
 
             dates.append(schema.dump(dict(
                 date=obj['metadata']['publication_date'],
-                type='Accepted')).data)
+                type='Accepted')))
         else:
             dates.append(schema.dump(dict(
                 date=obj['metadata']['publication_date'],
-                type='Issued')).data)
+                type='Issued')))
         for interval in obj['metadata'].get('dates', []):
             date_type = interval.get('type')
             if date_type in schema.VALID_DATE_TYPES:
@@ -360,7 +360,7 @@ class DataCiteSchemaV1(DataCiteSchema):
 
         items = []
         for c in contributors:
-            items.append(s.dump(c).data)
+            items.append(s.dump(c))
 
         # Grants
         s = ContributorSchema()
@@ -509,7 +509,7 @@ class DataCiteSchemaV4(DataCiteSchema):
 
         items = []
         for c in contributors:
-            items.append(s.dump(c).data)
+            items.append(s.dump(c))
 
         return items
 

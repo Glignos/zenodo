@@ -66,6 +66,6 @@ class FeatureCollection(Schema):
             if l.get('lat') and l.get('lon'):
                 items.append(s.dump({
                     'lat': l['lat'], 'lon': l['lon'], 'place': l['place']
-                }).data)
+                }))
 
         return items

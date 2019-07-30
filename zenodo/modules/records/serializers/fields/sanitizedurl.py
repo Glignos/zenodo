@@ -34,8 +34,9 @@ from .sanitizedunicode import SanitizedUnicode
 class SanitizedUrl(SanitizedUnicode, fields.Url):
     """SanitizedString-based URL field."""
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         """Deserialize sanitized URL value."""
         # Apply SanitizedUnicode first
-        value = SanitizedUnicode._deserialize(self, value, attr, data)
+        value = SanitizedUnicode._deserialize(
+            self, value, attr, data)
         return fields.Url._deserialize(self, value, attr, data)

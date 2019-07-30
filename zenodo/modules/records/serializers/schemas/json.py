@@ -44,7 +44,7 @@ class StrictKeysSchema(Schema):
     """Ensure only valid keys exists."""
 
     @validates_schema(pass_original=True)
-    def check_unknown_fields(self, data, original_data):
+    def check_unknown_fields(self, data, original_data, **kwargs):
         """Check for unknown keys."""
         for key in original_data:
             if key not in self.fields:
@@ -70,7 +70,7 @@ class ResourceTypeSchema(StrictKeysSchema):
         return obj['title']['en'] if obj else missing
 
     @validates_schema
-    def validate_data(self, data):
+    def validate_data(self, data, **kwargs):
         """Validate resource type."""
         obj = ObjectType.get_by_dict(data)
         if obj is None:

@@ -39,7 +39,6 @@ def test_basic_api(app, db, communities, deposit, deposit_file):
 
     recid_v1, record_v1 = deposit_v1.fetch_published()
     recid_v1_value = recid_v1.pid_value
-
     deposit_v1.newversion()
     pv = PIDVersioning(child=recid_v1)
     depid_v2 = pv.draft_child_deposit

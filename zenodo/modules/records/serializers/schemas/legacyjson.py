@@ -239,7 +239,7 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
                 field_names='communities')
         return comm_ids or missing
 
-    def dump_prereservedoi(self, obj):
+    def dump_prereservedoi(self, obj, **kwargs):
         """Dump pre-reserved DOI."""
         recid = obj.get('recid')
         if recid:
@@ -253,7 +253,7 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
             )
         return missing
 
-    def load_prereservedoi(self, obj):
+    def load_prereservedoi(self, obj, **kwargs):
         """Load pre-reserved DOI.
 
         The value is not important as we do not store it. Since the deposit and
@@ -262,7 +262,7 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
         return missing
 
     @pre_dump()
-    def predump_related_identifiers(self, data):
+    def predump_related_identifiers(self, data, **kwargs):
         """Split related/alternate identifiers.
 
         This ensures that we can just use the base schemas definitions of
@@ -280,7 +280,7 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
         return data
 
     @pre_load()
-    def preload_related_identifiers(self, data):
+    def preload_related_identifiers(self, data, **kwargs):
         """Split related/alternate identifiers.
 
         This ensures that we can just use the base schemas definitions of
@@ -301,17 +301,19 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
 
             data.setdefault(k, [])
             data[k].append(r)
+        return data
 
     @pre_load()
-    def preload_resource_type(self, data):
+    def preload_resource_type(self, data, **kwargs):
         """Prepare data for easier deserialization."""
         if data.get('upload_type') != 'publication':
             data.pop('publication_type', None)
         if data.get('upload_type') != 'image':
             data.pop('image_type', None)
+        return data
 
     @pre_load()
-    def preload_license(self, data):
+    def preload_license(self, data, **kwargs):
         """Default license."""
         acc = data.get('access_right', AccessRight.OPEN)
         if acc in [AccessRight.OPEN, AccessRight.EMBARGOED]:
@@ -320,9 +322,10 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
                     data['license'] = 'CC0-1.0'
                 else:
                     data['license'] = 'CC-BY-4.0'
+        return data
 
     @post_load()
-    def merge_keys(self, data):
+    def merge_keys(self, data, **kwargs):
         """Merge dot keys."""
         prefixes = [
             'resource_type',
@@ -343,9 +346,10 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
 
         # Pre-reserve DOI is implemented differently now.
         data.pop('prereserve_doi', None)
+        return data
 
     @validates('communities')
-    def validate_communities(self, values):
+    def validate_communities(self, values, **kwargs):
         """Validate communities."""
         for v in values:
             if not isinstance(v, six.string_types):
@@ -355,7 +359,7 @@ class LegacyMetadataSchemaV1(common.CommonMetadataSchemaV1):
                 )
 
     @validates_schema
-    def validate_data(self, obj):
+    def validate_data(self, obj, **kwargs):
         """Validate resource type."""
         type_ = obj.get('resource_type', {}).get('type')
         if type_ in ['publication', 'image']:
@@ -426,7 +430,7 @@ class DepositFormSchemaV1(LegacyRecordSchemaV1):
     """Schema for deposit form JSON."""
 
     @post_dump()
-    def remove_envelope(self, data):
+    def remove_envelope(self, data, **kwargs):
         """Remove envelope."""
         if 'metadata' in data:
             data = data['metadata']
@@ -437,7 +441,7 @@ class GitHubRecordSchemaV1(DepositFormSchemaV1):
     """JSON which can be added to the .zenodo.json file in a repository."""
 
     @post_dump()
-    def remove_envelope(self, data):
+    def remove_envelope(self, data, **kwargs):
         """Remove envelope."""
         data = super(GitHubRecordSchemaV1, self).remove_envelope(data)
         for k in ['doi', 'prereserve_doi']:

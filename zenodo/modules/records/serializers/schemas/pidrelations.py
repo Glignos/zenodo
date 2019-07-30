@@ -32,7 +32,6 @@ class VersionRelation(RelationSchema):
     """PID version relation schema."""
 
     count = fields.Method('dump_count')
-
     last_child = fields.Method('dump_last_child')
     draft_child_deposit = fields.Method('dump_draft_child_deposit')
 
