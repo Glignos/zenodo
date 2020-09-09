@@ -23,22 +23,22 @@
 define([], function() {
 
   function formatJournalFilter() {
-    return function(record) {
+    return function(journal) {
       var formatJournal = "";
 
-      if (record.metadata.journal && record.metadata.journal.title) {
-        formatJournal = "Published in " + record.metadata.journal.title;
-        if (record.metadata.journal.volume) {
-          formatJournal = formatJournal + ", vol. " + record.metadata.journal.volume;
+      if (journal && journal.title) {
+        formatJournal = "Published in " + journal.title;
+        if (journal.volume) {
+          formatJournal = formatJournal + ", vol. " + journal.volume;
         }
-        if (record.metadata.journal.issue) {
-          formatJournal = formatJournal + ", issue " + record.metadata.journal.issue;
+        if (journal.issue) {
+          formatJournal = formatJournal + ", issue " + journal.issue;
         }
-        if (record.metadata.journal.pages && record.metadata.journal.pages.includes("-")) {
-          formatJournal = formatJournal + ", pp. " + record.metadata.journal.pages;
+        if (journal.pages && journal.pages.includes("-")) {
+          formatJournal = formatJournal + ", pp. " + journal.pages;
         }
-        else if (record.metadata.journal.pages) {
-          formatJournal = formatJournal + ", p. " + record.metadata.journal.pages;
+        else if (journal.pages) {
+          formatJournal = formatJournal + ", p. " + journal.pages;
         }
         formatJournal = formatJournal + ". "
       }

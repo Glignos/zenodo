@@ -24,9 +24,9 @@
     </p>
     <p class="hidden-xs"><a target="_self" ng-href="/record/{{record.id}}"><span ng-bind-html="record.metadata.description|striptags|limitTo:300"></span></a></p>
     <p>
-      <small class="text-muted hidden-xs">
-        {{record | formatJournal }}
-        Uploaded on {{ record.created|date:'longDate' }}
+      <small ng-if="{{record.metadata.journal | formatJournal }}" class="text-muted hidden-xs">
+        {{record.metadata.journal | formatJournal }}
+        Published in {{record.metadata.journal.title}}, {{record.metadata.journal.volume}}
       </small>
     </p>
     <p ng-if="!vm.invenioSearchArgs.all_versions && record.metadata.relations.version[0].count > 1">
